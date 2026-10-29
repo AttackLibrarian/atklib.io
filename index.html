@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#11110f">
+  <meta name="description" content="ATKLIB — correspondence.">
+  <title>ATKLIB — Correspondence</title>
+  <style>
+    :root {
+      --paper: #11110f;
+      --text: #b8b1a6;
+      --dim: #a49b8f;
+      --quiet: #81796f;
+      --rule: rgba(169, 160, 147, .43);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { min-height: 100%; background: var(--paper); }
+
+    body {
+      min-width: 280px;
+      min-height: 100svh;
+      margin: 0;
+      color: var(--text);
+      font-family: "Courier New", Courier, monospace;
+      background:
+        radial-gradient(ellipse 48% 69% at 18% 28%, rgba(82,76,65,.14), transparent 82%),
+        radial-gradient(ellipse 63% 91% at 81% 54%, rgba(0,0,0,.68), transparent 85%),
+        #11110f;
+    }
+
+    /* Fine, reproducible noise. Inline SVG: no image requests or scripts. */
+    .texture {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: .105;
+      mix-blend-mode: screen;
+      z-index: 2;
+    }
+
+    .page {
+      position: relative;
+      isolation: isolate;
+      min-height: 100svh;
+      min-height: max(740px, 100svh);
+      overflow: hidden;
+    }
+
+    .rail {
+      position: absolute;
+      top: 6.6%;
+      bottom: 12.9%;
+      left: 9.8%;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--rule), rgba(169,160,147,.45) 47%, var(--rule));
+    }
+
+    .rail::after {
+      content: "+";
+      position: absolute;
+      top: 51.8%;
+      left: 50%;
+      padding: 0 4px;
+      transform: translate(-50%, -50%);
+      background: #151410;
+      font: 13px/1 "Courier New", Courier, monospace;
+      color: var(--dim);
+    }
+
+    .marks {
+      position: absolute;
+      top: 7.2%;
+      right: 4.2%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--dim);
+      opacity: .77;
+      pointer-events: none;
+    }
+    .marks::before, .marks::after { content: "·"; font: 16px/1 monospace; }
+    .marks i { width: 6px; height: 6px; display: block; background: currentColor; }
+
+    .content {
+      position: relative;
+      width: min(540px, 65vw);
+      margin-left: calc(9.8% + 78px);
+      padding-top: clamp(148px, 20.5vh, 237px);
+      padding-bottom: 180px;
+    }
+
+    .comb {
+      width: 122px;
+      height: auto;
+      display: block;
+      overflow: visible;
+      margin-left: -1px;
+      margin-bottom: 38px;
+      color: #a59b8d;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      font-size: clamp(29px, 2.7vw, 41px);
+      line-height: 1.2;
+      letter-spacing: .41em;
+    }
+
+    .short-rule {
+      width: 32px;
+      height: 1px;
+      margin: 43px 0 55px;
+      background: var(--rule);
+    }
+
+    h2 {
+      margin: 0 0 39px;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    .contacts {
+      margin: 0;
+      max-width: 555px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 120px 52px minmax(0, 1fr);
+      align-items: baseline;
+      margin-bottom: 23px;
+    }
+    .contact-row:last-child { margin-bottom: 0; }
+
+    dt {
+      margin: 0;
+      color: var(--dim);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+    dd { margin: 0; white-space: nowrap; }
+    .dash { display: block; width: 32px; height: 1px; background: var(--rule); align-self: center; }
+
+    a { color: var(--text); text-decoration: none; text-underline-offset: .3em; }
+    a:hover { color: #e2dcd0; text-decoration: underline; text-decoration-thickness: 1px; }
+    a:focus-visible { outline: 1px solid #e2dcd0; outline-offset: 5px; }
+
+    .footer {
+      position: absolute;
+      bottom: 7.5%;
+      left: calc(9.8% + 30px);
+      right: 5.8%;
+      display: flex;
+      justify-content: flex-end;
+      border-top: 1px solid var(--rule);
+      padding-top: 15px;
+    }
+    .footer::before {
+      content: "+";
+      position: absolute;
+      left: -39px;
+      top: -16px;
+      font: 30px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 200;
+      color: var(--dim);
+    }
+    .footer p {
+      margin: 0;
+      color: var(--dim);
+      font-size: 11px;
+      line-height: 1.5;
+      letter-spacing: .2em;
+      text-align: right;
+    }
+
+    @media (max-width: 760px) {
+      .page { min-height: max(790px, 100svh); }
+      .rail { left: 7.5%; top: 5%; bottom: 13%; }
+      .marks { right: 6%; }
+      .content {
+        margin-left: calc(7.5% + 34px);
+        width: calc(100% - 7.5% - 54px);
+        padding-top: clamp(133px, 16svh, 190px);
+      }
+      .comb { width: 105px; margin-bottom: 34px; }
+      h1 { font-size: clamp(28px, 7vw, 36px); letter-spacing: .34em; }
+      h2 { font-size: 12px; letter-spacing: .35em; margin-bottom: 34px; }
+      .short-rule { margin: 37px 0 50px; }
+      .contacts { font-size: 12px; }
+      .contact-row { grid-template-columns: 91px 28px minmax(0,1fr); }
+      dt { font-size: 10px; letter-spacing: .14em; }
+      .dash { width: 15px; }
+      .footer { left: calc(7.5% + 16px); right: 6%; bottom: 7%; }
+      .footer::before { left: -24px; font-size: 22px; top: -12px; }
+      .footer p { font-size: 10px; max-width: 280px; }
+    }
+
+    @media (max-width: 350px) {
+      .contacts { font-size: 11px; }
+      .contact-row { grid-template-columns: 80px 20px minmax(0,1fr); }
+      dt { font-size: 9px; }
+      .dash { width: 10px; }
+      h1 { letter-spacing: .26em; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="texture" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".78" numOctaves="3" seed="13" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain)" opacity=".6" />
+  </svg>
+
+  <main class="page">
+    <div class="rail" aria-hidden="true"></div>
+    <div class="marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+    <div class="content">
+      <!-- Interlocked hexagonal cells, each shared wall drawn exactly once. -->
+      <svg class="comb" viewBox="0 0 109.03 141.00" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Abstract honeycomb symbol">
+        <path d="M 61.66 12.75 L 61.66 29.25 M 47.37 37.50 L 61.66 29.25 M 33.08 29.25 L 47.37 37.50 M 33.08 29.25 L 33.08 12.75 M 33.08 12.75 L 47.37 4.50 M 47.37 4.50 L 61.66 12.75 M 47.37 54.00 L 47.37 37.50 M 33.08 62.25 L 47.37 54.00 M 18.79 54.00 L 33.08 62.25 M 18.79 54.00 L 18.79 37.50 M 18.79 37.50 L 33.08 29.25 M 75.95 54.00 L 75.95 37.50 M 61.66 62.25 L 75.95 54.00 M 47.37 54.00 L 61.66 62.25 M 61.66 29.25 L 75.95 37.50 M 104.53 37.50 L 104.53 54.00 M 104.53 54.00 L 90.24 62.25 M 75.95 54.00 L 90.24 62.25 M 75.95 37.50 L 90.24 29.25 M 90.24 29.25 L 104.53 37.50 M 33.08 78.75 L 33.08 62.25 M 18.79 87.00 L 33.08 78.75 M 18.79 87.00 L 4.50 78.75 M 4.50 78.75 L 4.50 62.25 M 4.50 62.25 L 18.79 54.00 M 61.66 78.75 L 61.66 62.25 M 47.37 87.00 L 61.66 78.75 M 33.08 78.75 L 47.37 87.00 M 90.24 62.25 L 90.24 78.75 M 90.24 78.75 L 75.95 87.00 M 61.66 78.75 L 75.95 87.00 M 47.37 103.50 L 47.37 87.00 M 33.08 111.75 L 47.37 103.50 M 33.08 111.75 L 18.79 103.50 M 18.79 103.50 L 18.79 87.00 M 75.95 87.00 L 75.95 103.50 M 75.95 103.50 L 61.66 111.75 M 47.37 103.50 L 61.66 111.75 M 61.66 111.75 L 61.66 128.25 M 61.66 128.25 L 47.37 136.50 M 47.37 136.50 L 33.08 128.25 M 33.08 128.25 L 33.08 111.75" stroke="currentColor" stroke-width="1.04" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+
+      <h1>ATKLIB</h1>
+      <div class="short-rule" aria-hidden="true"></div>
+
+      <section aria-labelledby="correspondence">
+        <h2 id="correspondence">Correspondence</h2>
+        <!-- Replace the example handles/URLs below with your verified contact details. -->
+        <dl class="contacts">
+          <div class="contact-row">
+            <dt>Email</dt><span class="dash" aria-hidden="true"></span>
+            <dd><a href="mailto:hello@atklib.io">hello@atklib.io</a></dd>
+          </div>
+          <div class="contact-row">
+            <dt>GitHub</dt><span class="dash" aria-hidden="true"></span>
+            <dd><a href="https://github.com/attacklibrarian" rel="me">github.com/attacklibrarian</a></dd>
+          </div>
+          <div class="contact-row">
+            <dt>Telegram</dt><span class="dash" aria-hidden="true"></span>
+            <dd><a href="https://t.me/atklib">@atklib</a></dd>
+          </div>
+          <div class="contact-row">
+            <dt>Signal</dt><span class="dash" aria-hidden="true"></span>
+            <dd>available on request</dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+
+    <footer class="footer"><p>Truth, like death, comes for everyone.</p></footer>
+  </main>
+</body>
+</html>
